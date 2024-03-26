@@ -65,13 +65,13 @@ int main() {
 }
 void findGold(int x, int y, const int &m, const int &n, int **map, int *moveX, int *moveY, const int &xGold, const int &yGold, int effort, int steps, int &leastEffort, bool &firstTime, bool **visited)
 {
-
     displayMap(map, m, n);
     if (x == xGold && y == yGold) {//cout << effort << endl;
         if (firstTime) {
             leastEffort = effort;
             displayMap(map, m, n);
             cout << "effort: " << effort << endl;
+            firstTime = false;
             return;
         } else
         {
@@ -91,23 +91,30 @@ void findGold(int x, int y, const int &m, const int &n, int **map, int *moveX, i
     {
         if (x + moveX[i] >= 0 && x + moveX[i] < m && y + moveY[i] >= 0 && y + moveY[i] < n && map[x + moveX[i]][y + moveY[i]] < 200 &&
             !visited[x + moveX[i]][y + moveY[i]]) {
-            newX[i] = x + moveX[i];
-            newY[i] = y + moveY[i];
+            newX[validMoves] = x + moveX[i];
+            newY[validMoves] = y + moveY[i];
+            //cout << newX[validMoves] << " " << newY[validMoves] << endl;
             ++validMoves;
-            cout << newX[i] << " " << newY[i] << endl;
+            
         }
     }
-    cout << "validMoves: " << validMoves << endl;
+    //cout << "validMoves: " << validMoves << endl;
+    for (int j = 0; j < validMoves; ++j)
+    {
+        //cout << newX[j] << " " << newY[j] << endl;
+    }
+    if (!validMoves)
+        return;
     heuristic(newX, newY, map, validMoves);
-    cout << "best move: " << newX[0] << " " << newY[0] << endl;
+    //cout << "best move: " << newX[0] << " " << newY[0] << endl;
     for (int i = 0; i < validMoves; ++i)
     {
-        cout << "moving to " << newX[i] << " " << newY[i] << endl;
+        //cout << "moving to " << newX[i] << " " << newY[i] << endl;
         int newEffort = effort + 1 + map[newX[i]][newY[i]];
         int temp = map[newX[i]][newY[i]];
         map[newX[i]][newY[i]] = steps + 200;
         visited[newX[i]][newY[i]] = true;
-        cout << steps << endl;
+        //cout << steps << endl;
         findGold(newX[i], newY[i], m, n, map, moveX, moveY, xGold, yGold, newEffort, steps + 1, leastEffort, firstTime, visited);
         map[newX[i]][newY[i]] = temp;
         visited[newX[i]][newY[i]] = false;
@@ -125,18 +132,26 @@ void displayMap(int **map, int m, int n)
         }
         cout << endl;
     }
-}
-void heuristic(int newX[], int newY[], int **map, int validMoves)
-{
-    for (int j = 0; j < validMoves; ++j)
+    ofstream fout; fout.open("output.txt");
+    fout << endl;
+    for (int i = 0; i < n; ++i)
     {
-        cout << newX[j] << " " << newY[j] << endl;
+        for (int j = 0; j < m; ++j)
+        {
+            fout << setw(3) << map[j][i] << " ";
+        }
+        fout << endl;
     }
-    for (int j = 0; j < validMoves; ++j)
-    {
-        cout << j << endl;
+    fout.close();
+}
+void heuristic(int newX[], int newY[], int **map, int validMoves) {
+    for (int j = 0; j < validMoves; ++j) {
+        //cout << newX[j] << " " << newY[j] << endl;
+    }
+    for (int j = 0; j < validMoves; ++j) {
+        //cout << j << endl;
         for (int i = 0; i < validMoves - 1; ++i) {
-            cout << i << endl;
+            //cout << i << endl;
             if (map[newX[i]][newY[i]] > map[newX[i + 1]][newY[i + 1]]) {
                 int temp = newX[i + 1];
                 newX[i + 1] = newX[i];
@@ -148,4 +163,5 @@ void heuristic(int newX[], int newY[], int **map, int validMoves)
         }
     }
     cout << "best move: " << newX[0] << " " << newY[0] << endl;
+    cout << map[newX[0]][newY[0]] << endl;
 }
