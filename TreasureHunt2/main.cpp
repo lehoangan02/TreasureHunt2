@@ -65,6 +65,7 @@ int main() {
 }
 void findGold(int x, int y, const int &m, const int &n, int **map, int *moveX, int *moveY, const int &xGold, const int &yGold, int effort, int steps, int &leastEffort, bool &firstTime, bool **visited)
 {
+
     displayMap(map, m, n);
     if (x == xGold && y == yGold) {//cout << effort << endl;
         if (firstTime) {
@@ -93,9 +94,12 @@ void findGold(int x, int y, const int &m, const int &n, int **map, int *moveX, i
             newX[i] = x + moveX[i];
             newY[i] = y + moveY[i];
             ++validMoves;
+            cout << newX[i] << " " << newY[i] << endl;
         }
     }
+    cout << "validMoves: " << validMoves << endl;
     heuristic(newX, newY, map, validMoves);
+    cout << "best move: " << newX[0] << " " << newY[0] << endl;
     for (int i = 0; i < validMoves; ++i)
     {
         cout << "moving to " << newX[i] << " " << newY[i] << endl;
@@ -103,6 +107,7 @@ void findGold(int x, int y, const int &m, const int &n, int **map, int *moveX, i
         int temp = map[newX[i]][newY[i]];
         map[newX[i]][newY[i]] = steps + 200;
         visited[newX[i]][newY[i]] = true;
+        cout << steps << endl;
         findGold(newX[i], newY[i], m, n, map, moveX, moveY, xGold, yGold, newEffort, steps + 1, leastEffort, firstTime, visited);
         map[newX[i]][newY[i]] = temp;
         visited[newX[i]][newY[i]] = false;
@@ -121,12 +126,17 @@ void displayMap(int **map, int m, int n)
         cout << endl;
     }
 }
-void heuristic(int *newX, int *newY, int **map, int validMoves)
+void heuristic(int newX[], int newY[], int **map, int validMoves)
 {
-    //int value[4] = {map[newX[0]][newY[0]], map[newX[1]][newY[1]], map[newX[2]][newY[2]], map[newX[3]][newY[3]]};
     for (int j = 0; j < validMoves; ++j)
     {
+        cout << newX[j] << " " << newY[j] << endl;
+    }
+    for (int j = 0; j < validMoves; ++j)
+    {
+        cout << j << endl;
         for (int i = 0; i < validMoves - 1; ++i) {
+            cout << i << endl;
             if (map[newX[i]][newY[i]] > map[newX[i + 1]][newY[i + 1]]) {
                 int temp = newX[i + 1];
                 newX[i + 1] = newX[i];
@@ -137,4 +147,5 @@ void heuristic(int *newX, int *newY, int **map, int validMoves)
             }
         }
     }
+    cout << "best move: " << newX[0] << " " << newY[0] << endl;
 }
